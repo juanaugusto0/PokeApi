@@ -2,11 +2,10 @@ package bradesco.banco.PokeApi.model;
 
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -19,7 +18,7 @@ public class Pokemon {
     private int height;
     private int weight;
 
-    @ManyToMany(mappedBy = "pokemons")
+    @ManyToMany(mappedBy = "pokemons", fetch = FetchType.LAZY)
     private List<Pokedex> pokedexes;
 
 }
