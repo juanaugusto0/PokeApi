@@ -24,9 +24,9 @@ public class PokemonService {
         this.historyRepository = historyRepository;
     }
 
-    public Pokemon getPokemonById(Long id) {
+    public Pokemon getPokemonByName(String name) {
         try {
-            Pokemon pokemon = restTemplate.getForObject(url + "pokemon/" + id, Pokemon.class);
+            Pokemon pokemon = restTemplate.getForObject(url + "pokemon/" + name, Pokemon.class);
 
             // Salvar histórico
             History history = new History();
@@ -36,10 +36,7 @@ public class PokemonService {
 
             return pokemon;
         } catch (HttpClientErrorException.NotFound e) {
-            throw new PokemonNotFoundException(id);
+            throw new PokemonNotFoundException(name);
         }
-    }
-    public Pokemon getPokemonByName(String name) {
-        return restTemplate.getForObject(url + "pokemon/" + name, Pokemon.class);
     }
 }

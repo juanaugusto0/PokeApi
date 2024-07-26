@@ -1,5 +1,7 @@
 package bradesco.banco.PokeApi.model;
+
 import java.util.List;
+
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,4 +14,5 @@ public class Pokemon {
     private List<Type> types;
     private List<Move> moves;
     private List<Ability> abilities;
+
 }

@@ -18,8 +18,8 @@ public class PokemonController {
         this.pokemonService = pokemonService;
     }
 
-    @GetMapping("/{id}")
-    public Pokemon getPokemonById(@PathVariable Long id) {
-        return pokemonService.getPokemonById(id);
+    @GetMapping("/{name}")
+    public Pokemon getPokemonByName(@PathVariable String name) {
+        return pokemonService.getPokemonByName(name);
     }
 }
