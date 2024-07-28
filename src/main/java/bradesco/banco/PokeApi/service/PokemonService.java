@@ -1,7 +1,9 @@
 package bradesco.banco.PokeApi.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -12,18 +14,21 @@ import bradesco.banco.PokeApi.model.Pokedex;
 import bradesco.banco.PokeApi.model.Pokemon;
 import bradesco.banco.PokeApi.repository.HistoryRepository;
 import bradesco.banco.PokeApi.repository.PokedexRepository;
+import bradesco.banco.PokeApi.repository.PokemonRepository;
 
 @Service
 public class PokemonService {
     private final RestTemplate restTemplate;
     private final String url = "https://pokeapi.co/api/v2/";
-    private final HistoryRepository historyRepository;
-    private final PokedexRepository pokedexRepository;
+    @Autowired
+    private HistoryRepository historyRepository;
+    @Autowired
+    private PokedexRepository pokedexRepository;
+    @Autowired
+    private PokemonRepository pokemonRepository;
 
-    public PokemonService(HistoryRepository historyRepository, PokedexRepository pokedexRepository) {
+    public PokemonService() {
         this.restTemplate = new RestTemplate();
-        this.historyRepository = historyRepository;
-        this.pokedexRepository = pokedexRepository;
     }
 
     public Pokemon getPokemonByName(String name) {
@@ -42,12 +47,27 @@ public class PokemonService {
         }
     }
 
-    public Pokemon addPokemonToPokedex(String name, String trainer) {
+    public String addPokemonToPokedex(String name, String trainer) {
         Pokemon pokemon = getPokemonByName(name);
-        Pokedex pokedex = new Pokedex();
-        pokedex.getPokemons().add(pokemon);
+        Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(trainer);
+        Pokedex pokedex = pokedexOptional.orElseGet(Pokedex::new);
         pokedex.setTrainerName(trainer);
+        pokedex.getPokemons().add(pokemon);
         pokedexRepository.save(pokedex);
-        return pokemon;
+        pokemon.setPokedex(pokedex);
+        pokemonRepository.save(pokemon);
+        return (pokemon + " adicionado à pokedex de " + trainer);
     }
+
+    public String removePokemonFromPokedex(String name, String trainer) {
+        Pokemon pokemon = getPokemonByName(name);
+        Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(trainer);
+        Pokedex pokedex = pokedexOptional.orElseThrow(() -> new PokemonNotFoundException(trainer));
+        pokedex.getPokemons().remove(pokemon);
+        pokedexRepository.save(pokedex);
+        pokemon.setPokedex(null);
+        pokemonRepository.save(pokemon);
+        return (pokemon + " removido da pokedex de " + trainer);
+    }
+
 }

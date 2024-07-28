@@ -1,7 +1,7 @@
 package bradesco.banco.PokeApi.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,11 +17,11 @@ public class Pokedex {
 
     private String trainerName;
 
-    @ManyToMany
-    private List<Pokemon> pokemons;
+    @OneToMany(mappedBy = "pokedex")
+    private Set<Pokemon> pokemons;
 
     public Pokedex() {
-        pokemons = new ArrayList<>();
+        pokemons = new HashSet<>();
     }
 
 }
