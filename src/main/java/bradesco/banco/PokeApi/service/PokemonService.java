@@ -59,6 +59,15 @@ public class PokemonService {
         return (pokemon.getName() + " adicionado à pokedex de " + trainer);
     }
 
-    
+    public String removePokemonFromPokedex(String name, String trainer) {
+        Pokemon pokemon = getPokemonByName(name);
+        Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(trainer);
+        Pokedex pokedex = pokedexOptional.orElseThrow(() -> new PokemonNotFoundException(trainer));
+        pokedex.getPokemons().remove(pokemon);
+        pokedexRepository.save(pokedex);
+        pokemon.setPokedex(null);
+        pokemonRepository.save(pokemon);
+        return (pokemon.getName() + " removido da pokedex de " + trainer);
+    }
 
 }
