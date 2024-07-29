@@ -35,6 +35,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler (GenerationNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleGenerationNotFound(GenerationNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     @Getter
     @Setter
     public static class ErrorResponse {
