@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import bradesco.banco.PokeApi.dto.PokemonActionRequestDto;
+import bradesco.banco.PokeApi.exception.IllegalActionException;
 import bradesco.banco.PokeApi.exception.PokemonNotFoundException;
 import bradesco.banco.PokeApi.exception.TrainerNotFoundException;
 import bradesco.banco.PokeApi.model.History;
@@ -85,6 +87,26 @@ public class PokemonService {
         Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(trainer);
         Pokedex pokedex = pokedexOptional.orElseThrow(() -> new TrainerNotFoundException(trainer));
         return pokedex.toString();
+    }
+
+    public String feedPokemon (PokemonActionRequestDto request) {
+        Pokemon pokemon = getPokemonByName(request.getName());
+        Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(request.getTrainerName());
+        Pokedex pokedex = pokedexOptional.orElseThrow(() -> new TrainerNotFoundException(request.getTrainerName()));
+
+        List<Pokemon> pokemons = pokemonRepository.findByPokemon(pokemon.getId(), pokedex.getId());
+        if(pokemons.isEmpty()){
+            throw new PokemonNotFoundException(request.getName());
+        }
+        if ("feed".equalsIgnoreCase(request.getAction())) {
+            for(Pokemon p : pokemons){
+                p.setLastFed(LocalDateTime.now());
+                pokemonRepository.save(p);
+            }
+            return (request.getName() + " alimentado");
+        } else {
+            throw new IllegalActionException(request.getAction());
+        }
     }
 
 }

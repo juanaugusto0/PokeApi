@@ -29,6 +29,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler (IllegalActionException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalAction(IllegalActionException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @Getter
     @Setter
     public static class ErrorResponse {

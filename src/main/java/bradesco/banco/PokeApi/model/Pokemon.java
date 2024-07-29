@@ -1,6 +1,6 @@
 package bradesco.banco.PokeApi.model;
 
-
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +16,8 @@ public class Pokemon {
     private int id;
 
     private String name;
+
+    private LocalDateTime lastFed;
 
     private int height;
     private int weight;
