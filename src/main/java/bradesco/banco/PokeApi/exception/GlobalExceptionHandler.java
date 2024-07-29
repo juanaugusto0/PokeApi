@@ -17,6 +17,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(PokemonNotOnPokedexException.class)
+    public ResponseEntity<ErrorResponse> handlePokemonNotOnPokedex(PokemonNotOnPokedexException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler (TrainerNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTrainerNotFound(TrainerNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     @Getter
     @Setter
     public static class ErrorResponse {

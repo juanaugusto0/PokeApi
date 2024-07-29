@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import bradesco.banco.PokeApi.model.Pokemon;
 import bradesco.banco.PokeApi.service.PokemonService;
 
@@ -25,6 +24,11 @@ public class PokemonController {
     @GetMapping("/{name}")
     public Pokemon getPokemonByName(@PathVariable String name) {
         return pokemonService.getPokemonByName(name);
+    }
+
+    @GetMapping("/pokedex/{trainer}")
+    public String getPokedexByTrainer(@PathVariable String trainer) {
+        return pokemonService.getPokedexByTrainer(trainer);
     }
 
     @PutMapping
