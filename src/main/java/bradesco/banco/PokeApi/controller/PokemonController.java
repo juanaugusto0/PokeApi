@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import bradesco.banco.PokeApi.dto.PokemonActionRequestDto;
+import bradesco.banco.PokeApi.model.Generation;
 import bradesco.banco.PokeApi.model.Pokemon;
 import bradesco.banco.PokeApi.service.PokemonService;
 
@@ -24,6 +25,11 @@ public class PokemonController {
         this.pokemonService = pokemonService;
     }
 
+    @GetMapping("generation/{id}")
+    public Generation getGenerationById (@PathVariable Long id) {
+        return pokemonService.getGenerationById(id);
+    }
+
     @GetMapping("/{name}")
     public Pokemon getPokemonByName(@PathVariable String name) {
         return pokemonService.getPokemonByName(name);
@@ -34,9 +40,19 @@ public class PokemonController {
         return pokemonService.getPokedexByTrainer(trainer);
     }
 
-    @PutMapping
+    @PutMapping("/pokedex")
     public String addPokemonToPokedex(@RequestParam String name, @RequestParam String trainer) {
         return pokemonService.addPokemonToPokedex(name, trainer);
+    }
+
+    @PutMapping("/generation/{id}")
+    public String addGeneration(Long id) {
+        return pokemonService.saveGeneration(id);
+    }
+
+    @PutMapping
+    public String addGenerationToPokedex(@RequestParam Long id, @RequestParam String trainer) {
+        return pokemonService.addGenerationToPokedex(id, trainer);
     }
 
     @PostMapping("/feed")
