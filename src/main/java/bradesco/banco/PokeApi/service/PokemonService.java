@@ -1,8 +1,8 @@
 package bradesco.banco.PokeApi.service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -143,7 +143,7 @@ public class PokemonService {
 
         
         for (PokemonSpecies p: generation.getPokemonSpecies()) {
-            if(!p.getName().equalsIgnoreCase("deoxys")){
+            if(!p.getName().equalsIgnoreCase("deoxys") && !p.getName().equalsIgnoreCase("pumpkaboo")  && !p.getName().equalsIgnoreCase("zygarde") && !p.getName().equalsIgnoreCase("meowstic") && !p.getName().equalsIgnoreCase("aegislash") && !p.getName().equalsIgnoreCase("gourgeist")){
                 addPokemonToPokedex(p.getName(), trainer);
             }
         }

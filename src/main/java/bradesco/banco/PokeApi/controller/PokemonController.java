@@ -46,7 +46,7 @@ public class PokemonController {
     }
 
     @PutMapping("/generation/{id}")
-    public String addGeneration(Long id) {
+    public String addGeneration(@PathVariable Long id) {
         return pokemonService.saveGeneration(id);
     }
 
