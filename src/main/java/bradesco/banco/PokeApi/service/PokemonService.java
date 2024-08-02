@@ -142,6 +142,10 @@ public class PokemonService {
     }
 
     public Generation getGenerationById(Long id) {
+        if (id == null || id == 0) {
+            throw new NullPointerException("Id da geração não pode ser nulo");
+            
+        }
         try {
             String response = restTemplate.getForObject(url + "generation/" + id, String.class);
             Generation generation = gson.fromJson(response, Generation.class);
