@@ -72,7 +72,7 @@ public class PokemonService {
     public String addPokemonToPokedex(String name, String trainer) {
         if (trainer == null || trainer.isEmpty()) {
             throw new NullPointerException("Nome do treinador não pode ser nulo ou vazio");
-            
+
         }
         Pokemon pokemon = getPokemonByName(name);
 
@@ -80,7 +80,7 @@ public class PokemonService {
         Pokedex pokedex = pokedexOptional.orElseGet(Pokedex::new);
 
         if (pokedexOptional.isEmpty()) {
-            pokedex.setTrainerName(trainer);            
+            pokedex.setTrainerName(trainer);
         }
 
         pokedex.getPokemons().add(pokemon);
@@ -101,11 +101,11 @@ public class PokemonService {
         Pokedex pokedex = pokedexOptional.orElseThrow(() -> new TrainerNotFoundException(trainer));
 
         List<Pokemon> pokemons = pokemonRepository.findByPokemon(pokemon.getId(), pokedex.getId());
-        if(pokemons.isEmpty()){
+        if (pokemons.isEmpty()) {
             throw new PokemonNotFoundException(name);
         }
 
-        for(Pokemon p : pokemons){
+        for (Pokemon p : pokemons) {
             pokemonRepository.delete(p);
         }
 
@@ -121,17 +121,17 @@ public class PokemonService {
         return pokedex.toString();
     }
 
-    public String feedPokemon (PokemonActionRequestDto request) {
+    public String feedPokemon(PokemonActionRequestDto request) {
         Pokemon pokemon = getPokemonByName(request.getName());
         Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(request.getTrainerName());
         Pokedex pokedex = pokedexOptional.orElseThrow(() -> new TrainerNotFoundException(request.getTrainerName()));
 
         List<Pokemon> pokemons = pokemonRepository.findByPokemon(pokemon.getId(), pokedex.getId());
-        if(pokemons.isEmpty()){
+        if (pokemons.isEmpty()) {
             throw new PokemonNotFoundException(request.getName());
         }
         if ("feed".equalsIgnoreCase(request.getAction())) {
-            for(Pokemon p : pokemons){
+            for (Pokemon p : pokemons) {
                 p.setLastFed(LocalDateTime.now());
                 pokemonRepository.save(p);
             }
@@ -144,7 +144,7 @@ public class PokemonService {
     public Generation getGenerationById(Long id) {
         if (id == null || id == 0) {
             throw new NullPointerException("Id da geração não pode ser nulo");
-            
+
         }
         try {
             String response = restTemplate.getForObject(url + "generation/" + id, String.class);
@@ -156,18 +156,19 @@ public class PokemonService {
         }
     }
 
-    public String saveGeneration (Long id) {
+    public String saveGeneration(Long id) {
         Generation generation = getGenerationById(id);
         generationRepository.save(generation);
         return "Geração de id " + id + " salva com sucesso";
     }
 
-    public String addGenerationToPokedex (Long id, String trainer) {
+    public String addGenerationToPokedex(Long id, String trainer) {
         Generation generation = getGenerationById(id);
 
-        
-        for (PokemonSpecies p: generation.getPokemonSpecies()) {
-            if(!p.getName().equalsIgnoreCase("deoxys") && !p.getName().equalsIgnoreCase("pumpkaboo")  && !p.getName().equalsIgnoreCase("zygarde") && !p.getName().equalsIgnoreCase("meowstic") && !p.getName().equalsIgnoreCase("aegislash") && !p.getName().equalsIgnoreCase("gourgeist")){
+        for (PokemonSpecies p : generation.getPokemonSpecies()) {
+            if (!p.getName().equalsIgnoreCase("deoxys") && !p.getName().equalsIgnoreCase("pumpkaboo")
+                    && !p.getName().equalsIgnoreCase("zygarde") && !p.getName().equalsIgnoreCase("meowstic")
+                    && !p.getName().equalsIgnoreCase("aegislash") && !p.getName().equalsIgnoreCase("gourgeist")) {
                 addPokemonToPokedex(p.getName(), trainer);
             }
         }
