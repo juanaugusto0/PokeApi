@@ -47,14 +47,21 @@ public class PokemonService {
         this.gson = new Gson();
     }
 
+    public void saveHistory(Pokemon pokemon) {
+        History history = new History();
+        history.setPokemonName(pokemon.getName());
+        history.setTimestamp(LocalDateTime.now());
+        historyRepository.save(history);
+    }
+
     public Pokemon getPokemonByName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new NullPointerException("Nome do pokemon não pode ser nulo ou vazio");
+        }
         try {
             Pokemon pokemon = restTemplate.getForObject(url + "pokemon/" + name.toLowerCase().trim(), Pokemon.class);
 
-            History history = new History();
-            history.setPokemonName(pokemon.getName());
-            history.setTimestamp(LocalDateTime.now());
-            historyRepository.save(history);
+            saveHistory(pokemon);
 
             return pokemon;
         } catch (HttpClientErrorException.NotFound e) {
@@ -63,6 +70,10 @@ public class PokemonService {
     }
 
     public String addPokemonToPokedex(String name, String trainer) {
+        if (trainer == null || trainer.isEmpty()) {
+            throw new NullPointerException("Nome do treinador não pode ser nulo ou vazio");
+            
+        }
         Pokemon pokemon = getPokemonByName(name);
 
         Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(trainer);
@@ -82,11 +93,17 @@ public class PokemonService {
     }
 
     public String removePokemonFromPokedex(String name, String trainer) {
+        if (trainer == null || trainer.isEmpty()) {
+            throw new NullPointerException("Nome do treinador não pode ser nulo ou vazio");
+        }
         Pokemon pokemon = getPokemonByName(name);
         Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(trainer);
         Pokedex pokedex = pokedexOptional.orElseThrow(() -> new TrainerNotFoundException(trainer));
 
         List<Pokemon> pokemons = pokemonRepository.findByPokemon(pokemon.getId(), pokedex.getId());
+        if(pokemons.isEmpty()){
+            throw new PokemonNotFoundException(name);
+        }
 
         for(Pokemon p : pokemons){
             pokemonRepository.delete(p);
@@ -96,6 +113,9 @@ public class PokemonService {
     }
 
     public String getPokedexByTrainer(String trainer) {
+        if (trainer == null || trainer.isEmpty()) {
+            throw new NullPointerException("Nome do treinador não pode ser nulo ou vazio");
+        }
         Optional<Pokedex> pokedexOptional = pokedexRepository.findByTrainerName(trainer);
         Pokedex pokedex = pokedexOptional.orElseThrow(() -> new TrainerNotFoundException(trainer));
         return pokedex.toString();
